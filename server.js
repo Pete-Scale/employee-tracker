@@ -64,13 +64,33 @@ function runEmployeeTracker() {
         });
 }
 
+function results(res) {
+    console.log(" ");
+    console.table(res);
+    runEmployeeTracker();
+}
+
 function viewAllEmployees() {
-    const query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT (m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id LEFT JOIN role ON e.role_id = role.id LEFT JOIN department ON role.department_id = department.id";
+    const query = 'SELECT e.id AS "ID", e.first_name AS "First Name", e.last_name AS "Last Name", role.title AS "Role Title", department.name AS "Department", role.salary AS "Salary", CONCAT (m.first_name, " " ,  m.last_name) AS "Manager" FROM employee e LEFT JOIN employee m ON e.manager_id = m.id LEFT JOIN role ON e.role_id = role.id LEFT JOIN department ON role.department_id = department.id';
     connection.query(query, (err, res) => {
         if(err) throw err;
-        console.log(" ");
-        console.table(res);
-        runEmployeeTracker();
+        results(res);
+    });
+}
+
+function viewAllRoles() {
+    const query = 'SELECT title AS "Role Titles" FROM role';
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        results(res);
+    });
+}
+
+function viewAllDepartments() {
+    const query = 'SELECT name AS "Departments" FROM department';
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        results(res);
     });
 }
 
