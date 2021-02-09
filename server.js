@@ -1,19 +1,19 @@
 const inquirer = require('inquirer');
-// const mysql = require('mysql');
+const mysql = require('mysql');
 const cTable = require('console.table');
 
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'root',
-//     database: 'employeeTracker_db'
-// });
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'employeeTracker_db'
+});
 
-// connection.connect(err => {
-//     if(err) throw err;
-//     console.log(`MySQL connected on ${connection.threadId}`);
-//     runEmployeeTracker();
-// });
+connection.connect(err => {
+    if(err) throw err;
+    console.log(`MySQL connected on ${connection.threadId}`);
+    runEmployeeTracker();
+});
 
 const actionChoices = [
     "View All Employees",
@@ -68,5 +68,3 @@ function exitEmployeeTracker() {
     connection.end();
     process.exit();
 }
-
-runEmployeeTracker();
