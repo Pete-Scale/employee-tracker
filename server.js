@@ -57,11 +57,21 @@ function runEmployeeTracker() {
                 case actionChoices[6]:
                     updateEmployeeRole();
                     break;
-                case actionChoices[-1]:
+                case actionChoices[7]:
                     exitEmployeeTracker();
                     break;
             }
         });
+}
+
+function viewAllEmployees() {
+    const query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT (m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id LEFT JOIN role ON e.role_id = role.id LEFT JOIN department ON role.department_id = department.id";
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        console.log(" ");
+        console.table(res);
+        runEmployeeTracker();
+    });
 }
 
 function exitEmployeeTracker() {
