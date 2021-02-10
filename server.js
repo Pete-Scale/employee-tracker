@@ -176,18 +176,33 @@ function addEmployee() {
         });
 }
 
-function addEmployee() {
+function addRole() {
     inquirer
         .prompt([
             {
-                name: "addRole",
+                name: "roleTitle",
                 type: "input",
                 message: "What new role title would you like to add?"
+            },
+            {
+                name: "salaryAmount",
+                type: "input",
+                message: "What is the salary for this new role?"   
+            },
+            {
+                name: "departmentID",
+                type: "input",
+                message: "What is the department id number?",
             }
         ])
         .then(answer => {
-            
-        })
+            const query = `INSERT INTO role (title, salary, department_id) VALUES ("${answer.roleTitle}", ${answer.salaryAmount}, ${answer.departmentID})`;
+            connection.query(query,
+            (err, res) => {
+                if(err) throw err;
+                results(res);
+            });
+        });
 }
 
 function addDepartment() {
@@ -200,8 +215,12 @@ function addDepartment() {
             }
         ])
         .then(answer => {
-            
-        })
+            const query = `INSERT INTO department (name) VALUES ("${answer.addDepartment}")`;
+            connection.query(query, (err, res) => {
+                if(err) throw err;
+                results(res);
+            });
+        });
 }
 // ADD ------------------------------------------------------------
 
