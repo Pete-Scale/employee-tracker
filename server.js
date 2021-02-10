@@ -90,7 +90,7 @@ function viewAllEmployees() {
 }
 
 function viewAllRoles() {
-    const query = 'SELECT title AS "Role Titles" FROM role';
+    const query = 'SELECT id AS "ID", title AS "All Role Titles", role AS "Role" department_id AS "Department ID" FROM role';
     connection.query(query, (err, res) => {
         if(err) throw err;
         results(res);
@@ -98,7 +98,7 @@ function viewAllRoles() {
 }
 
 function viewAllDepartments() {
-    const query = 'SELECT name AS "Departments" FROM department';
+    const query = 'SELECT id AS "ID", name AS "All Departments" FROM department';
     connection.query(query, (err, res) => {
         if(err) throw err;
         results(res);
