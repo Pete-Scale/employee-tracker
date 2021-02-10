@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql');
 const cTable = require('console.table');
 
+// CONNECTION -----------------------------------------------------
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -12,28 +13,31 @@ const connection = mysql.createConnection({
 connection.connect(err => {
     if(err) throw err;
     console.log(`MySQL connected on ${connection.threadId}`);
+    // START APP
     runEmployeeTracker();
 });
+// CONNECTION -----------------------------------------------------
 
-const actionChoices = [
-    "View All Employees",
-    "View All Roles",
-    "View All Departments", 
-    "Add Employee",
-    "Add Role",
-    "Add Department",
-    "Update Employee Roles",
-    "Exit"
-];
 
+// RUN TRACKER ----------------------------------------------------
 function runEmployeeTracker() {
+    const actionChoices = [
+        "View All Employees",
+        "View All Roles",
+        "View All Departments", 
+        "Add Employee",
+        "Add Role",
+        "Add Department",
+        "Update Employee Roles",
+        "Exit"
+    ];
     inquirer
-        .prompt({
+        .prompt([{
             name: "action",
             type: "list",
             message: "What would you like to do?",
             choices: actionChoices
-        })
+        }])
         .then(answer => {
             switch (answer.action) {
                 case actionChoices[0]:
@@ -64,6 +68,13 @@ function runEmployeeTracker() {
         });
 }
 
+function exitEmployeeTracker() {
+    connection.end();
+    process.exit();
+}
+// RUN TRACKER ----------------------------------------------------
+
+// VIEW -----------------------------------------------------------
 function results(res) {
     console.log(" ");
     console.table(res);
@@ -93,8 +104,104 @@ function viewAllDepartments() {
         results(res);
     });
 }
+// VIEW -----------------------------------------------------------
 
-function exitEmployeeTracker() {
-    connection.end();
-    process.exit();
+// ADD ------------------------------------------------------------
+function roleChoices() {
+    let roleArray = [];
+    connection.query('SELECT r.title FROM role r', (err, res) => {
+        if(err) throw err;
+        res.forEach(role => {
+            roleArray.push(role.title);
+        });
+    });
+    return roleArray;
 }
+
+function managerChoices() {
+    let managerArray = [];
+    const query = "SELECT CONCAT (e.first_name, ' ', e.last_name) AS full_name FROM employee e;"
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        res.forEach(employee => {
+            managerArray.push(employee.full_name);
+        });
+        managerArray.push('N/A');
+    });
+    return managerArray;
+}
+
+function addEmployee() {
+    inquirer
+        .prompt([
+            {
+                name: "first",
+                type: "input",
+                message: "What is the employee's first name?"
+            },
+            {
+                name: "last",
+                type: "input",
+                message: "What is the employee's last name?"
+            },
+            {
+                name: "role",
+                type: "list",
+                message: "What is the employee's role title?",
+                choices: roleChoices()
+            },
+            {
+                name: "manager",
+                type: "list",
+                message: "Who is the employee's manager? (If none leave blank)",
+                choices: managerChoices()
+            },
+        ])
+        .then(answer => {
+            managerFirstLast = answer.manager.split(' ');
+            const managerFirst = managerFirstLast[0];
+            const managerLast = managerFirstLast[1];
+            const query1 = `SELECT id FROM employee WHERE first_name = "${managerFirst}" AND last_name = "${managerLast}"`;
+            connection.query(query1, (err, res1) => {
+                if(err) throw err;
+                if(res1 === 'N/A') {
+                    res1 = null;
+                }
+                const query2 = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answer.first}", "${answer.last}", (SELECT id FROM role WHERE title = "${answer.role}"), ${res1[0].id})`;
+                connection.query(query2, (err, res2) => {
+                    if(err) throw err;
+                    results(res2);
+                });
+            });
+        });
+}
+
+function addEmployee() {
+    inquirer
+        .prompt([
+            {
+                name: "addRole",
+                type: "input",
+                message: "What new role title would you like to add?"
+            }
+        ])
+        .then(answer => {
+            
+        })
+}
+
+function addDepartment() {
+    inquirer
+        .prompt([
+            {
+                name: "addDepartment",
+                type: "input",
+                message: "What new department would you like to add?"
+            }
+        ])
+        .then(answer => {
+            
+        })
+}
+// ADD ------------------------------------------------------------
+
