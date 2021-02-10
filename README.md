@@ -9,3 +9,5 @@ https://www.npmjs.com/package/mysql
 https://www.npmjs.com/package/console.table
 
 https://javascript.info/task/array-negative
+
+https://www.w3schools.com/sql/sql_foreignkey.asp
