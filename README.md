@@ -117,6 +117,10 @@ A command-line application for managing a company's employees using node, inquir
 
 Special thanks to Josh and the gang!
 
+https://dev.mysql.com/downloads/mysql
+
+https://dev.mysql.com/downloads/workbench/
+
 https://www.npmjs.com/package/inquirer/v/0.2.3
 
 https://www.npmjs.com/package/mysql
